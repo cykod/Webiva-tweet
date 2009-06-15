@@ -1,0 +1,8 @@
+<div class='admin_content'>
+<% cms_form_for :options, @options, :html => {:class =>'admin_form' } do |f| -%>
+  <%= f.text_field :user_email %>
+  <%= f.text_field :user_password, :description => 'Hidden for security reasons - re-enter password to reset' %>
+<%= f.submit_tag 'Save' %>
+
+<%  end -%>
+</div>

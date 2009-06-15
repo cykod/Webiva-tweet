@@ -1,0 +1,6 @@
+<div class='cms_form'>
+<%  paragraph_options_form_for :user_tweet do |f| -%>
+  <%= f.text_area :default_message, :rows => 10 %>
+  <%= f.page_selector :redirect_to_page_id, :description => 'Leave blank to skip redirect' %>
+<% end -%>
+</div>

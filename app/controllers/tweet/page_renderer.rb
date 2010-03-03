@@ -1,4 +1,5 @@
 require 'twitter'
+require 'timeout'
 
 class Tweet::PageRenderer < ParagraphRenderer
 

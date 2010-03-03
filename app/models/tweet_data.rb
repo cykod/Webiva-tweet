@@ -17,21 +17,22 @@ class TweetData
     @expires_at,@tweet_data = DataCache.get_container(tweet_container,'data')
     
     if !@expires_at || @expires_at < Time.now
-
       begin 
-        if !@username.blank?
-          @twt = Twitter::HTTPAuth.new(@username,@password)
-          @twt_base = Twitter::Base.new(@twt)
-          @twt_base.verify_credentials
-        else
-          @twt = Twitter::HTTPAuth.new(nil,nil)
-          @twt_base = Twitter::Base.new(@twt)
-        end
-        
-        if !@screen_name.blank?
-          @data = @twt_base.user_timeline('screen_name' => @screen_name)
-        else
-          @data = @twt_base.user_timeline()
+        Timeout::timeout(3) do 
+          if !@username.blank?
+            @twt = Twitter::HTTPAuth.new(@username,@password)
+            @twt_base = Twitter::Base.new(@twt)
+            @twt_base.verify_credentials
+          else
+            @twt = Twitter::HTTPAuth.new(nil,nil)
+            @twt_base = Twitter::Base.new(@twt)
+          end
+          
+          if !@screen_name.blank?
+            @data = @twt_base.user_timeline('screen_name' => @screen_name)
+          else
+            @data = @twt_base.user_timeline()
+          end
         end
         
         if @data
@@ -43,6 +44,9 @@ class TweetData
         return @tweet_data
       rescue Twitter::TwitterError => e
         return @tweet_data # If we're over the rate limit, return the old data if we have it
+      rescue Exception => e
+        DataCache.put_container(tweet_container,'data',[ Time.now + (expires_in_minutes.minutes / 2), []])
+        return []
       end
     end
     @tweet_data

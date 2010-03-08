@@ -7,12 +7,16 @@ class Tweet::PageController < ParagraphController
   editor_for :tweets, :name => "Tweets", :feature => :tweet_page_tweets
   editor_for :user_tweet, :name => "User tweet", :feature => :tweet_page_user_tweet
 
-  class TweetOptions < HashModel
+  class TweetsOptions < HashModel
     attributes :user_login => nil, :user_password => nil, :screen_name => nil,:cache_minutes => 10, :limit => 0
     
     integer_options :cache_minutes, :limit
     
     validates_numericality_of :cache_minutes, :limit
+  end
+
+  # Backwards compatability
+  class TweetOptions < TweetsOptions
   end
   
   def tweets

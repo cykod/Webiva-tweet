@@ -16,7 +16,7 @@ class Tweet::PageRenderer < ParagraphRenderer
                                     @options.screen_name,
                                     @options.user_login,
                                     @options.user_password)
-    @tweet_data = @data_collector.timeline_data(@options.cache_minutes)
+    @tweet_data = @data_collector.timeline_data(@options.cache_minutes,editor?)
     
     if @tweet_data
       @tweet_data = @tweet_data[0..(@options.limit.to_i-1)] if @options.limit.to_i > 0

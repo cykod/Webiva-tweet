@@ -13,12 +13,12 @@ class TweetData
     "TweetData#{@paragraph_id}"
   end
   
-  def timeline_data(expires_in_minutes=10)
-    @expires_at,@tweet_data = DataCache.get_container(tweet_container,'data')
+  def timeline_data(expires_in_minutes=10,editor=false)
+    @expires_at,@tweet_data = DataCache.get_container(tweet_container,'data') unless editor
     
     if !@expires_at || @expires_at < Time.now
       begin 
-        Timeout::timeout(3) do 
+        Timeout::timeout(4) do 
           if !@username.blank?
             @twt = Twitter::HTTPAuth.new(@username,@password)
             @twt_base = Twitter::Base.new(@twt)
@@ -45,7 +45,8 @@ class TweetData
       rescue Twitter::TwitterError => e
         return @tweet_data # If we're over the rate limit, return the old data if we have it
       rescue Exception => e
-        DataCache.put_container(tweet_container,'data',[ Time.now + (expires_in_minutes.minutes / 2), []])
+        
+        DataCache.put_container(tweet_container,'data',[ Time.now + (expires_in_minutes.minutes / 2), @tweet_data ])
         return []
       end
     end

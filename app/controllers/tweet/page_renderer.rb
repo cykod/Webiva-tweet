@@ -1,6 +1,7 @@
 require 'twitter'
 require 'timeout'
 
+
 class Tweet::PageRenderer < ParagraphRenderer
 
   features '/tweet/page_feature'
@@ -28,28 +29,20 @@ class Tweet::PageRenderer < ParagraphRenderer
   end
   
   def user_tweet
+
     @options = paragraph_options(:user_tweet)
     
-    @post = TweetUserPost.new(params["paragraph_#{paragraph.id}"])
     
-    if request.post? && params["paragraph_#{paragraph.id}"]
-      if @post.valid?
-        @post.post_update!
-        @posted = true
-        if @options.redirect_to_page_url
-          redirect_paragraph @options.redirect_to_page_url 
-          return
-        end
-      end
-    else
-      @post.message = @options.default_message if @post.message.blank?
-    end
-
+    @twtr = "http://twitter.com/home?"
+    @twt_source = @options.twt_source
     
-    data = { :options => @options, :post => @post, :posted => @posted }
+    @twt_status="From:?",@options.twt_status
+    @curr_page = Configuration.domain_link(paragraph_page_url)
+    @twt = @twtr, @twt_source, @twt_status, @curr_page
+    data = { :options => @options, :twt => @twt, :twt_source => @twt_source }
     
     render_paragraph :text => tweet_page_user_tweet_feature(data)
   end
-
-
+  
+  
 end

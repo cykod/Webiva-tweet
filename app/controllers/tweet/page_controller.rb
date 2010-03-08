@@ -38,7 +38,7 @@ class Tweet::PageController < ParagraphController
   
   
   class UserTweetOptions < HashModel
-      attributes :default_message => nil, :redirect_to_page_id => nil
+      attributes :twt_source => nil, :twt_status => nil, :redirect_to_page_id => nil
       
       page_options :redirect_to_page_id
   end

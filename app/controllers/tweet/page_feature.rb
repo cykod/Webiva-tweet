@@ -42,32 +42,18 @@ class Tweet::PageFeature < ParagraphFeature
   feature :tweet_page_user_tweet, :default_feature => <<-FEATURE
    <div class='twitter_box'>
     <h2>Post to Twitter</h2>
-    <cms:form>
-      <cms:errors><div class='errors'><cms:value/></div></cms:errors>
-      <table>
-        <tr><td colspan='2'><cms:message/></td></tr>
-        <tr><td>Twitter Login</td><td><cms:username/></td></tr>
-        <tr><td>Twitter Password</td><td><cms:password/></td></tr>
-        <tr><td colspan='2' align='center'><cms:post/></td></tr>
-      </table>
 
-    </cms:form>
-    <cms:posted>
-      Your Message has been posted
-    </cms:posted>
+ <a href="<cms:twitter_url />"> Tweet This</a>
+
     </div>
   FEATURE
   
 
   def tweet_page_user_tweet_feature(data)
     webiva_feature(:tweet_page_user_tweet) do |c|
-      c.form_for_tag('form',"paragraph_#{paragraph.id}") { |t| data[:posted] ? nil : data[:post] }
-        c.form_error_tag('form:errors')
-        c.field_tag('form:username',:size => 20) 
-        c.field_tag('form:password', :control => 'password_field',:size => 20)
-        c.field_tag('form:message',:control => 'text_area',:rows => 5, :size => 35)
-        c.button_tag('form:post',:value => 'Submit')
-      c.expansion_tag('posted') { data[:posted] } 
+      c.value_tag('twitter_url') { |t| data[:twt] }
+      c.form_error_tag('form:errors')
+       
     end
   end
 

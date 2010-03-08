@@ -1,6 +1,8 @@
 <div class='cms_form'>
 <%  paragraph_options_form_for :user_tweet do |f| -%>
-  <%= f.text_area :default_message, :rows => 10 %>
+  <%= f.text_field :twt_source, :description => '@yourcompanystwitteraccount' %>
+  <%= f.text_field :twt_status, :value => "Currently reading:", :description => 'The text you want sent to the users followers' %>
+
   <%= f.page_selector :redirect_to_page_id, :description => 'Leave blank to skip redirect' %>
 <% end -%>
 </div>

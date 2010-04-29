@@ -3,8 +3,9 @@
 class Tweet::AdminController < ModuleController
 
   component_info 'Tweet', :description => 'Twitter support', 
-                              :access => :private
-                              
+                          :access => :private,
+                          :dependencies => ['oauth']
+
   # Register a handler feature
   register_permission_category :tweet, "Tweet" ,"Permissions related to Tweet"
   

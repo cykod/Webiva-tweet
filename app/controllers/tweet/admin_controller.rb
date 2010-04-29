@@ -13,6 +13,8 @@ class Tweet::AdminController < ModuleController
                                   ]
   permit 'tweet_config'
 
+  register_handler :oauth, :provider, 'TweetOauthProvider'
+
   cms_admin_paths "options",
                    "Options" =>   { :controller => '/options' },
                    "Modules" =>  { :controller => '/modules' },
@@ -49,7 +51,7 @@ class Tweet::AdminController < ModuleController
   end
   
   class Options < HashModel
-    attributes :user_email => nil, :user_password => nil
+    attributes :user_email => nil, :user_password => nil, :consumer_key => nil, :consumer_secret => nil
   end
   
 end

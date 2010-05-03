@@ -3,8 +3,9 @@
 class Tweet::AdminController < ModuleController
 
   component_info 'Tweet', :description => 'Twitter support', 
-                              :access => :private
-                              
+                          :access => :private,
+                          :dependencies => ['oauth']
+
   # Register a handler feature
   register_permission_category :tweet, "Tweet" ,"Permissions related to Tweet"
   
@@ -12,6 +13,8 @@ class Tweet::AdminController < ModuleController
                                   [ :config, 'Configure Tweet', 'Configure Tweet' ]
                                   ]
   permit 'tweet_config'
+
+  register_handler :oauth, :provider, 'TweetOauthProvider'
 
   cms_admin_paths "options",
                    "Options" =>   { :controller => '/options' },
@@ -49,7 +52,7 @@ class Tweet::AdminController < ModuleController
   end
   
   class Options < HashModel
-    attributes :user_email => nil, :user_password => nil
+    attributes :user_email => nil, :user_password => nil, :consumer_key => nil, :consumer_secret => nil
   end
   
 end

@@ -10,16 +10,18 @@ class TweetOauthProvider < OauthProvider::Base
   def authorize_url
     request_token = self.client.set_callback_url self.redirect_uri
 
-    self.session[self.session_name] = {:redirect_uri => self.redirect_uri, :oauth_token => request_token.token, :oauth_secret => request_token.secret}
+    self.session[:redirect_uri] = self.redirect_uri
+    self.session[:oauth_token] = request_token.token
+    self.session[:oauth_secret] = request_token.secret
 
     request_token.authorize_url :oauth_callback => self.redirect_uri
   end
 
   def access_token(params)
     begin
-      access_token, access_secret = self.client.authorize_from_request self.session[self.session_name][:oauth_token], self.session[self.session_name][:oauth_secret], params[:oauth_verifier]
-      self.session[self.session_name][:access_token] = access_token
-      self.session[self.session_name][:access_secret] = access_secret
+      token, secret = self.client.authorize_from_request self.session[:oauth_token], self.session[:oauth_secret], params[:oauth_verifier]
+      self.token = token
+      self.secret = secret
       true
     rescue OAuth::Error => e
       Rails.logger.error e
@@ -33,7 +35,7 @@ class TweetOauthProvider < OauthProvider::Base
 
   def twitter
     return @twitter if @twitter
-    self.client.authorize_from_access self.session[self.session_name][:access_token], self.session[self.session_name][:access_secret]
+    self.client.authorize_from_access self.token, self.secret
     @twitter = Twitter::Base.new self.client
   end
 
@@ -64,6 +66,22 @@ class TweetOauthProvider < OauthProvider::Base
 
   def get_profile_photo_url
     self.get_oauth_user_data[:profile_photo_url]
+  end
+
+  def token
+    self.session[:token]
+  end
+
+  def token=(token)
+    self.session[:token] = token
+  end
+
+  def secret
+    self.session[:secret]
+  end
+
+  def secret=(secret)
+    self.session[:secret] = secret
   end
 
   protected

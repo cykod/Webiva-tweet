@@ -15,7 +15,7 @@ class Tweet::PageFeature < ParagraphFeature
   def tweet_page_tweets_feature(data)
     webiva_feature(:tweet_page_tweets) do |c|
       c.loop_tag('tweet','tweets') { |t| data[:tweets] }
-        c.value_tag('tweet:text') { |t| t.locals.tweet['text'] }
+        c.h_tag('tweet:text') { |t| t.locals.tweet['text'] }
         c.date_tag('tweet:date',DEFAULT_DATETIME_FORMAT.t) do |t|  
           begin 
             tm = Time.parse(t.locals.tweet['created_at'])

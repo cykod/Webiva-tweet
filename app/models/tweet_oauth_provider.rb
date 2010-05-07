@@ -68,14 +68,6 @@ class TweetOauthProvider < OauthProvider::Base
     self.get_oauth_user_data[:profile_photo_url]
   end
 
-  def token
-    self.session[:token]
-  end
-
-  def token=(token)
-    self.session[:token] = token
-  end
-
   def secret
     self.session[:secret]
   end

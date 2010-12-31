@@ -10,4 +10,4 @@ rescue Exception => e
   end
 end
 
-config.gem 'twitter'
+config.gem 'twitter', :version => '0.9.12'

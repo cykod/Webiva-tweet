@@ -23,14 +23,8 @@ class Tweet::AdminController < ModuleController
  
  public 
  
- def options
+  def options
     cms_page_path ['Options','Modules'],"Tweet Options"
-    
-    if params[:options] && params[:options][:user_password].blank?
-      @orig_opts = self.class.module_options
-      params[:options][:user_password] = @orig_opts.user_password
-      
-    end
     
     @options = self.class.module_options(params[:options])
 
@@ -40,19 +34,41 @@ class Tweet::AdminController < ModuleController
       redirect_to :controller => '/modules'
       return
     end    
-    
-    if !request.post?
-      @options.user_password = nil
-    end 
-  
   end
-  
+
+  def login
+    self.provider.redirect_uri = url_for :action => 'setup'
+    redirect_to self.provider.authorize_url
+  end
+
+  def setup
+    if self.provider.access_token(params)
+      @options = self.class.module_options
+      @options.oauth_token = @provider.token
+      Configuration.set_config_model(@options)
+      flash[:notice] = 'Saved twitter credentials'
+    else
+      flash[:notice] = 'Twitter login failed'
+    end
+
+    redirect_to :action => 'options'
+  end
+
   def self.module_options(vals=nil)
     Configuration.get_config_model(Options,vals)
   end
   
   class Options < HashModel
-    attributes :user_email => nil, :user_password => nil, :consumer_key => nil, :consumer_secret => nil
+    attributes :consumer_key => nil, :consumer_secret => nil, :oauth_token => nil
   end
-  
+
+  protected
+
+  def provider
+    @provider ||= OauthProvider::Base.provider('twitter', session)
+  end
+
+  def oauth_user
+    @oauth_user ||= self.provider.push_oauth_user(myself)
+  end
 end

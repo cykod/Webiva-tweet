@@ -9,7 +9,7 @@
 <% cms_form_for :options, @options, :html => {:class =>'admin_form' } do |f| -%>
   <%= f.text_field :consumer_key %>
   <%= f.text_field :consumer_secret %>
-  <%= f.custom_field :oauth_token, :value => @options.oauth_token ? 'Saved' : 'Must login into twitter' %>
+  <%= f.custom_field :oauth_token, :value => @options.oauth_token && @options.oauth_secret ? 'Saved' : 'Must login into twitter' %>
 <%= f.submit_tag 'Save' %>
 
 <%  end -%>

@@ -18,16 +18,9 @@ class TweetData
     
     if !@expires_at || @expires_at < Time.now
       begin 
-        Timeout::timeout(4) do 
-          if !@username.blank?
-            @twt = Twitter::HTTPAuth.new(@username,@password)
-            @twt_base = Twitter::Base.new(@twt)
-            @twt_base.verify_credentials
-          else
-            @twt = Twitter::HTTPAuth.new(nil,nil)
-            @twt_base = Twitter::Base.new(@twt)
-          end
-          
+        Timeout::timeout(4) do
+          @twt_base = Tweet::AdminController.module_options.twitter
+
           if !@screen_name.blank?
             @data = @twt_base.user_timeline('screen_name' => @screen_name)
           else

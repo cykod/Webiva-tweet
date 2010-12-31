@@ -45,6 +45,7 @@ class Tweet::AdminController < ModuleController
     if self.provider.access_token(params)
       @options = self.class.module_options
       @options.oauth_token = @provider.token
+      @options.oauth_secret = @provider.secret
       Configuration.set_config_model(@options)
       flash[:notice] = 'Saved twitter credentials'
     else
@@ -59,7 +60,15 @@ class Tweet::AdminController < ModuleController
   end
   
   class Options < HashModel
-    attributes :consumer_key => nil, :consumer_secret => nil, :oauth_token => nil
+    attributes :consumer_key => nil, :consumer_secret => nil, :oauth_token => nil, :oauth_secret => nil
+
+    def twitter
+      return @twitter if @twitter
+      provider = OauthProvider::Base.provider('twitter',{})
+      provider.token = self.oauth_token
+      provider.secret = self.oauth_secret
+      @twitter = provider.twitter
+    end
   end
 
   protected

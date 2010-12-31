@@ -1,7 +1,5 @@
 <div class='cms_form'>
 <%  paragraph_options_form_for :tweets do |f| -%>
-  <%= f.text_field :user_login, :description => 'Leave blank to authenticate anonymously' %>
-  <%= f.text_field :user_password, :description => 'Hidden for security reasons - re-enter password to reset' %>
   <%= f.text_field :screen_name, :description => 'Screen name to show, leave blank logged in user' %>
   <%= f.text_field :cache_minutes, :description => "Number of minutes to cache data for.\nAccounts are rate limited to 100 API requests per hour,\nso set accordingly." %>
   <%= f.text_field :limit, :description => 'Maximum number of tweets to show' %>

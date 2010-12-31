@@ -14,9 +14,7 @@ class Tweet::PageRenderer < ParagraphRenderer
     @options = paragraph_options(:tweets)
     
     @data_collector = TweetData.new(paragraph.id,
-                                    @options.screen_name,
-                                    @options.user_login,
-                                    @options.user_password)
+                                    @options.screen_name)
     @tweet_data = @data_collector.timeline_data(@options.cache_minutes,editor?)
     
     if @tweet_data

@@ -1,6 +1,3 @@
-require 'twitter'
-require 'timeout'
-
 
 class Tweet::PageRenderer < ParagraphRenderer
 
@@ -13,24 +10,21 @@ class Tweet::PageRenderer < ParagraphRenderer
   
     @options = paragraph_options(:tweets)
     
-    @data_collector = TweetData.new(paragraph.id,
-                                    @options.screen_name)
-    @tweet_data = @data_collector.timeline_data(@options.cache_minutes,editor?)
-    
-    if @tweet_data
-      @tweet_data = @tweet_data[0..(@options.limit.to_i-1)] if @options.limit.to_i > 0
+    result = renderer_cache(nil,@options.screen_name, :expires => @options.cache_minutes.to_i.minutes) do |cache|
+
+      tweets = delayed_cache_fetch(TweetData, :delayed_tweet_collector, {:screen_name => @options.screen_name, :limit => @options.limit.to_i}, @options.screen_name, :expires => @options.cache_minutes.to_i.minutes)
+      return render_paragraph :text => '' if ! tweets
+
+      data = { :tweets => tweets[:tweets] }
+      cache[:output] =  tweet_page_tweets_feature(data)
     end
-                                      
-    data = { :tweets => @tweet_data }
-    
-    render_paragraph :text => tweet_page_tweets_feature(data)
+
+    render_paragraph :text => result.output
   end
   
   def user_tweet
-
     @options = paragraph_options(:user_tweet)
-    
-    
+
     @twtr = "http://twitter.com/home?"
     @twt_source = @options.twt_source
     
@@ -41,6 +35,4 @@ class Tweet::PageRenderer < ParagraphRenderer
     
     render_paragraph :text => tweet_page_user_tweet_feature(data)
   end
-  
-  
 end

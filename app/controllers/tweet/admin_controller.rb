@@ -1,5 +1,4 @@
 
-
 class Tweet::AdminController < ModuleController
 
   component_info 'Tweet', :description => 'Twitter support', 
